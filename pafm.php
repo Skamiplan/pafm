@@ -174,7 +174,9 @@ if ($do) {
 			nonce_check();
 			exit(doExtract($subject, $path));
 		case 'readFile':
-			exit(doReadFile($subject, $path));
+			exit(doReadFile($subject, $path));				
+		case 'downloadFile':
+			exit(doDownloadFile($subject, $path));
 		case 'rename':
 			nonce_check();
 			exit(doRename($subject, $path));
@@ -520,6 +522,19 @@ function doExtract($subject, $path){
 	}
 	redirect();
 }
+
+function doDownloadFile($subject, $path){	
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="'.basename($subject).'"');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($subject));
+    readfile($path.'/'.$subject);
+    exit;
+}
+
 function doReadFile($subject, $path){
 	return file_get_contents($path.'/'.$subject);
 }
